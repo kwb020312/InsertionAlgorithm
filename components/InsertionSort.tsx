@@ -1,15 +1,41 @@
 import { range, shuffle } from "lodash";
+import { useState } from "react";
 
 const getArr = () => shuffle(range(1, 11));
 
+const sort = (arr: number[]) => {
+  for (let i = 1; i < arr.length; i++) {
+    let key = arr[i];
+    let j = i - 1;
+
+    while (j >= 0 && arr[j] > key) {
+      arr[j + 1] = arr[j];
+      j = j - 1;
+    }
+
+    arr[j + 1] = key;
+  }
+  return arr;
+};
+
 export default function InsertionSort() {
-  const arr = getArr();
+  const [arr, setArr] = useState(getArr());
+
+  const handleShuffle = () => {
+    setArr(getArr());
+  };
+
+  const handleSort = () => {
+    const newArr = [...arr];
+    setArr(sort(newArr));
+  };
+
   return (
     <div>
       <div className="board">{arr.join(",")}</div>
       <div className="buttonBox">
-        <button>shuffle</button>
-        <button>sort</button>
+        <button onClick={handleShuffle}>shuffle</button>
+        <button onClick={handleSort}>sort</button>
       </div>
       <style jsx>{`
         .board {

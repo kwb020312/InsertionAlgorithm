@@ -1,7 +1,7 @@
 # 삽입 정렬
 
-<img src="./graph.png">
-<img src="./insertionSort.png">
+<img src="./graph.PNG">
+<img src="./insertionSort.PNG">
 
 ## 알게된점
 

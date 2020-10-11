@@ -1,5 +1,5 @@
 import { range, shuffle } from "lodash";
-import { Dispatch, FC, SetStateAction, useState, memo } from "react";
+import { Dispatch, FC, SetStateAction, useState, memo, useEffect } from "react";
 
 const SIZE = 20;
 const getArr = () => shuffle(range(1, SIZE));
@@ -114,11 +114,13 @@ const areArrEqual = (oldProps: IPropsBoard, newProps: IPropsBoard) => {
 const MemorizeBoard = memo(Board, areArrEqual);
 
 export default function InsertionSort() {
-  const [arr, setArr] = useState(getArr());
+  const [arr, setArr] = useState([1]);
   const [idxI, setIdxI] = useState(1);
   const [idxJ, setIdxJ] = useState(1);
   const [isRunning, setIsRunning] = useState(false);
   const [onOff, setOnOff] = useState(false);
+
+  useEffect(() => setArr(getArr()), []);
 
   const handleShuffle = () => {
     setArr(getArr());

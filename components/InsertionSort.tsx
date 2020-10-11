@@ -1,5 +1,5 @@
 import { range, shuffle } from "lodash";
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import { Dispatch, FC, SetStateAction, useState, memo } from "react";
 
 const SIZE = 20;
 const getArr = () => shuffle(range(1, SIZE));
@@ -50,6 +50,10 @@ const getX = (idx: number) => {
   return idx * 21;
 };
 
+interface IPropsBoard {
+  arr: number[];
+}
+
 const Bar: FC<PropsBar> = ({ value, i }) => {
   return (
     <>
@@ -77,11 +81,44 @@ const Bar: FC<PropsBar> = ({ value, i }) => {
   );
 };
 
+const Board: FC<IPropsBoard> = (props) => {
+  const { arr } = props;
+  return (
+    <>
+      <div className="board">
+        {arr.map(
+          (value, i) => (
+            console.log("bar rendered"), (<Bar key={i} value={value} i={i} />)
+          )
+        )}
+      </div>
+      <style jsx>
+        {`
+          .board {
+            width: 100%;
+            height: 50vh;
+            background-color: green;
+            color: white;
+            transform: rotateX(100deg);
+          }
+        `}
+      </style>
+    </>
+  );
+};
+
+const areArrEqual = (oldProps: IPropsBoard, newProps: IPropsBoard) => {
+  return oldProps.arr === newProps.arr;
+};
+
+const MemorizeBoard = memo(Board, areArrEqual);
+
 export default function InsertionSort() {
   const [arr, setArr] = useState(getArr());
   const [idxI, setIdxI] = useState(1);
   const [idxJ, setIdxJ] = useState(1);
   const [isRunning, setIsRunning] = useState(false);
+  const [onOff, setOnOff] = useState(false);
 
   const handleShuffle = () => {
     setArr(getArr());
@@ -97,11 +134,7 @@ export default function InsertionSort() {
 
   return (
     <div>
-      <div className="board">
-        {arr.map((value, i) => (
-          <Bar key={i} value={value} i={i} />
-        ))}
-      </div>
+      <MemorizeBoard arr={arr} />
       <div
         className="index i"
         style={{ transform: `translateX(${getX(idxI)}px)` }}
@@ -117,7 +150,7 @@ export default function InsertionSort() {
       <div className="buttonBox">
         {isRunning === false ? (
           <>
-            {" "}
+            <button onClick={() => setOnOff(!onOff)}>on/off</button>
             <button onClick={handleShuffle}>shuffle</button>
             <button onClick={handleSort}>sort</button>
           </>
@@ -126,13 +159,6 @@ export default function InsertionSort() {
         )}
       </div>
       <style jsx>{`
-        .board {
-          width: 100%;
-          height: 50vh;
-          background-color: green;
-          color: white;
-          transform: rotateX(100deg);
-        }
         button {
           font-size: 40px;
         }

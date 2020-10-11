@@ -4,15 +4,13 @@ import { Dispatch, FC, SetStateAction, useState } from "react";
 const SIZE = 20;
 const getArr = () => shuffle(range(1, SIZE));
 
-const delaySetArr = (
-  arr: number[],
-  setArr: Dispatch<SetStateAction<number[]>>
-) => {
-  return new Promise((resolve) => {
-    setArr([...arr]);
-    setTimeout(resolve, 10);
+const DURATION = 10;
+
+const delaySetValue = (value: any, setValue: TSetAny) =>
+  new Promise((resolve) => {
+    setValue(value);
+    setTimeout(resolve, DURATION);
   });
-};
 
 const sort = async (
   arr: number[],
@@ -22,16 +20,16 @@ const sort = async (
   setIsRunning: TSetIsRunning
 ) => {
   for (let i = 1; i < arr.length; i++) {
-    setIdxI(i);
+    await delaySetValue(i, setIdxI);
     let key = arr[i];
     let j = i - 1;
-    setIdxJ(j);
+    await delaySetValue(j, setIdxJ);
 
     while (j >= 0 && arr[j] > key) {
       arr[j + 1] = arr[j];
-      await delaySetArr(arr, setArr);
+      await delaySetValue([...arr], setArr);
       j = j - 1;
-      setIdxJ(j);
+      await delaySetValue(j, setIdxJ);
     }
 
     arr[j + 1] = key;
@@ -46,6 +44,11 @@ interface PropsBar {
 }
 type TSetIdx = Dispatch<SetStateAction<number>>;
 type TSetIsRunning = Dispatch<SetStateAction<boolean>>;
+type TSetAny = Dispatch<SetStateAction<any>>;
+
+const getX = (idx: number) => {
+  return idx * 21;
+};
 
 const Bar: FC<PropsBar> = ({ value, i }) => {
   return (
@@ -55,7 +58,7 @@ const Bar: FC<PropsBar> = ({ value, i }) => {
         style={{
           height: value * 50,
           display: "inline-block",
-          transform: `translateX(${i * 21})`,
+          transform: `translateX(${getX(i)})`,
           fontSize: 5,
           marginRight: 1,
         }}
@@ -82,6 +85,8 @@ export default function InsertionSort() {
 
   const handleShuffle = () => {
     setArr(getArr());
+    setIdxI(1);
+    setIdxJ(1);
   };
 
   const handleSort = async () => {
@@ -99,13 +104,13 @@ export default function InsertionSort() {
       </div>
       <div
         className="index i"
-        style={{ transform: `translateX(${idxI * 20}px)` }}
+        style={{ transform: `translateX(${getX(idxI)}px)` }}
       >
         i
       </div>
       <div
         className="index j"
-        style={{ transform: `translateX(${idxJ * 20}px)` }}
+        style={{ transform: `translateX(${getX(idxJ)}px)` }}
       >
         j
       </div>

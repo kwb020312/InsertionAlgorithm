@@ -3,6 +3,22 @@
 <img src="./graph.PNG">
 <img src="./insertionSort.PNG">
 
+```javascript
+// 삽입정렬의 기본 알고리즘
+for (let i = 1; i < arr.length; i++) {
+  let key = arr[i];
+  let j = i - 1;
+  while (j >= 0 && arr[j] > key) {
+    arr[j + 1] = arr[j];
+    j = j - 1;
+  }
+
+  arr[j + 1] = key;
+}
+```
+
+<img src="./insertion-sort.png">
+
 ## 알게된점
 
 ```javascript
